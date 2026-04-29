@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="http://bank.updg/workflow"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath">
+
+    <process id="projectInitApproval" name="项目立项审批流程" isExecutable="true">
+        <startEvent id="start" name="发起立项"/>
+        <userTask id="deptManagerReview" name="部门经理审批" flowable:assignee="${deptManager}"/>
+        <userTask id="updgDirectorReview" name="UPDG主任审批" flowable:assignee="${updgDirector}"/>
+        <userTask id="itDeptReview" name="信息技术部审批" flowable:assignee="${itDirector}"/>
+        <userTask id="companyLeaderReview" name="公司领导审批" flowable:assignee="${companyLeader}"/>
+        <endEvent id="approved" name="审批通过"/>
+        <endEvent id="rejected" name="审批驳回"/>
+
+        <sequenceFlow sourceRef="start" targetRef="deptManagerReview"/>
+        <sequenceFlow sourceRef="deptManagerReview" targetRef="updgDirectorReview">
+            <conditionExpression>${approved == true}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="updgDirectorReview" targetRef="itDeptReview">
+            <conditionExpression>${approved == true}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="itDeptReview" targetRef="companyLeaderReview">
+            <conditionExpression>${approved == true}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="companyLeaderReview" targetRef="approved">
+            <conditionExpression>${approved == true}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="deptManagerReview" targetRef="rejected">
+            <conditionExpression>${approved == false}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="updgDirectorReview" targetRef="rejected">
+            <conditionExpression>${approved == false}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="itDeptReview" targetRef="rejected">
+            <conditionExpression>${approved == false}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="companyLeaderReview" targetRef="rejected">
+            <conditionExpression>${approved == false}</conditionExpression>
+        </sequenceFlow>
+    </process>
+</definitions>

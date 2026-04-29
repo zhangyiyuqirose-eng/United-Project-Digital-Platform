@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://updg.com/bpmn">
+
+    <!-- F-1004 项目结项审批流程 (Project Close Approval) -->
+    <process id="projectCloseApproval" name="UPDG项目结项审批流程" isExecutable="true">
+
+        <startEvent id="startEvent" name="结项申请提交"/>
+
+        <userTask id="pmReview" name="项目经理确认" flowable:assignee="${projectManager}">
+            <documentation>项目经理确认项目交付成果及文档完整性</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="pmReview"/>
+
+        <exclusiveGateway id="pmDecision" name="PM确认结果"/>
+        <sequenceFlow id="flow2" sourceRef="pmReview" targetRef="pmDecision"/>
+
+        <sequenceFlow id="reject1" sourceRef="pmDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${pmConfirmed == false}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="qaReview" name="质量部验收" flowable:assignee="${qaReviewer}">
+            <documentation>质量部对项目交付物进行验收</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow3" sourceRef="pmDecision" targetRef="qaReview">
+            <conditionExpression xsi:type="tFormalExpression">${pmConfirmed == true}</conditionExpression>
+        </sequenceFlow>
+
+        <exclusiveGateway id="qaDecision" name="质量验收结果"/>
+        <sequenceFlow id="flow4" sourceRef="qaReview" targetRef="qaDecision"/>
+
+        <sequenceFlow id="reject2" sourceRef="qaDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${qaPassed == false}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="financeClose" name="财务部结算" flowable:assignee="${financeReviewer}">
+            <documentation>财务部完成项目结算和尾款确认</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow5" sourceRef="qaDecision" targetRef="financeClose">
+            <conditionExpression xsi:type="tFormalExpression">${qaPassed == true}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="pmoClose" name="PMO结项审批" flowable:assignee="${pmoApprover}">
+            <documentation>PMO综合审批结项申请</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow6" sourceRef="financeClose" targetRef="pmoClose"/>
+
+        <exclusiveGateway id="pmoDecision" name="PMO审批结果"/>
+        <sequenceFlow id="flow7" sourceRef="pmoClose" targetRef="pmoDecision"/>
+
+        <sequenceFlow id="reject3" sourceRef="pmoDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${pmoApproved == false}</conditionExpression>
+        </sequenceFlow>
+
+        <serviceTask id="archiveDocs" name="文档自动归档" flowable:class="com.bank.updg.updg_workflow.delegate.DocumentArchiveDelegate"/>
+
+        <sequenceFlow id="flow8" sourceRef="pmoDecision" targetRef="archiveDocs">
+            <conditionExpression xsi:type="tFormalExpression">${pmoApproved == true}</conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="approveEnd" name="结项通过">
+            <terminateEventDefinition/>
+        </endEvent>
+
+        <sequenceFlow id="flow9" sourceRef="archiveDocs" targetRef="approveEnd"/>
+
+        <endEvent id="rejectEnd" name="结项驳回"/>
+
+    </process>
+</definitions>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://updg.com/bpmn">
+
+    <!-- F-1002 立项审批流程 (Project Initiation Approval) -->
+    <process id="projectInitApproval" name="UPDG项目立项审批流程" isExecutable="true">
+
+        <startEvent id="startEvent" name="立项申请提交" flowable:formFieldValidation="true"/>
+
+        <userTask id="pmoReview" name="PMO初审" flowable:assignee="${pmoReviewer}" flowable:formKey="initReviewForm">
+            <documentation>PMO对立项材料进行完整性审查</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="pmoReview"/>
+
+        <exclusiveGateway id="pmoDecision" name="PMO审核结果"/>
+        <sequenceFlow id="flow2" sourceRef="pmoReview" targetRef="pmoDecision"/>
+
+        <sequenceFlow id="reject1" sourceRef="pmoDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${approved == false}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="deptReview" name="部门领导审核" flowable:assignee="${deptLeader}">
+            <documentation>部门领导从业务角度审核立项申请</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow3" sourceRef="pmoDecision" targetRef="deptReview">
+            <conditionExpression xsi:type="tFormalExpression">${approved == true}</conditionExpression>
+        </sequenceFlow>
+
+        <exclusiveGateway id="deptDecision" name="部门审核结果"/>
+        <sequenceFlow id="flow4" sourceRef="deptReview" targetRef="deptDecision"/>
+
+        <sequenceFlow id="reject2" sourceRef="deptDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${deptApproved == false}</conditionExpression>
+        </sequenceFlow>
+
+        <!-- Conditional branch: budget > 500万 requires UPDG主任 approval -->
+        <exclusiveGateway id="budgetCheck" name="预算是否超500万"/>
+        <sequenceFlow id="flow5" sourceRef="deptDecision" targetRef="budgetCheck">
+            <conditionExpression xsi:type="tFormalExpression">${deptApproved == true}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="directorApproval" name="UPDG主任审批" flowable:assignee="${director}">
+            <documentation>预算超500万的项目需UPDG主任审批</documentation>
+        </userTask>
+
+        <sequenceFlow id="highBudget" sourceRef="budgetCheck" targetRef="directorApproval">
+            <conditionExpression xsi:type="tFormalExpression">${budgetAmount > 5000000}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="financeReview" name="财务部审核" flowable:assignee="${financeReviewer}">
+            <documentation>财务部审核预算合理性</documentation>
+        </userTask>
+
+        <sequenceFlow id="lowBudget" sourceRef="budgetCheck" targetRef="financeReview">
+            <conditionExpression xsi:type="tFormalExpression">${budgetAmount &lt;= 5000000}</conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow6" sourceRef="directorApproval" targetRef="financeReview"/>
+
+        <exclusiveGateway id="financeDecision" name="财务审核结果"/>
+        <sequenceFlow id="flow7" sourceRef="financeReview" targetRef="financeDecision"/>
+
+        <sequenceFlow id="reject3" sourceRef="financeDecision" targetRef="rejectEnd">
+            <conditionExpression xsi:type="tFormalExpression">${financeApproved == false}</conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="approveEnd" name="立项通过">
+            <terminateEventDefinition/>
+        </endEvent>
+
+        <sequenceFlow id="flow8" sourceRef="financeDecision" targetRef="approveEnd">
+            <conditionExpression xsi:type="tFormalExpression">${financeApproved == true}</conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="rejectEnd" name="立项驳回"/>
+
+    </process>
+</definitions>

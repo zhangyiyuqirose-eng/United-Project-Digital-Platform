@@ -1,0 +1,65 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: updg-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: updg-auth
+          uri: lb://updg-auth
+          predicates:
+            - Path=/api/auth/**
+        - id: updg-system
+          uri: lb://updg-system
+          predicates:
+            - Path=/api/system/**
+        - id: updg-project
+          uri: lb://updg-project
+          predicates:
+            - Path=/api/project/**
+        - id: updg-workflow
+          uri: lb://updg-workflow
+          predicates:
+            - Path=/api/workflow/**
+        - id: updg-resource
+          uri: lb://updg-resource
+          predicates:
+            - Path=/api/resource/**
+        - id: updg-timesheet
+          uri: lb://updg-timesheet
+          predicates:
+            - Path=/api/timesheet/**
+        - id: updg-cost
+          uri: lb://updg-cost
+          predicates:
+            - Path=/api/cost/**
+        - id: updg-knowledge
+          uri: lb://updg-knowledge
+          predicates:
+            - Path=/api/knowledge/**
+        - id: updg-ai
+          uri: lb://updg-ai
+          predicates:
+            - Path=/api/ai/**
+        - id: updg-integration
+          uri: lb://updg-integration
+          predicates:
+            - Path=/api/integration/**
+        - id: updg-notify
+          uri: lb://updg-notify
+          predicates:
+            - Path=/api/notify/**
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  level:
+    com.bank.updg: INFO
