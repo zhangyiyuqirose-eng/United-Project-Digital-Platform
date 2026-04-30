@@ -13,108 +13,203 @@
         </div>
       </div>
 
+      <!-- Toggle Button (顶部位置) -->
+      <button class="sidebar-toggle" @click="uiStore.toggleSidebar">
+        <el-icon :size="16">
+          <DArrowLeft v-if="!uiStore.sidebarCollapsed" />
+          <DArrowRight v-else />
+        </el-icon>
+      </button>
+
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <!-- Single items -->
+        <!-- Dashboard (个人工作台) - 无二级菜单 -->
         <div class="nav-item" :class="{ active: activeMenu === '/dashboard' }" @click="navigateTo('/dashboard')">
           <el-icon :size="18"><Odometer /></el-icon>
           <span class="nav-text">个人工作台</span>
           <div class="nav-indicator" v-if="activeMenu === '/dashboard'" />
         </div>
 
-        <div class="nav-item" :class="{ active: activeMenu.startsWith('/project') }" @click="navigateTo('/project')">
-          <el-icon :size="18"><Folder /></el-icon>
-          <span class="nav-text">项目管理</span>
-          <div class="nav-indicator" v-if="activeMenu.startsWith('/project')" />
+        <!-- 项目管理 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('project') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/project') }" @click="toggleMenu('project')">
+            <el-icon :size="18"><FolderOpened /></el-icon>
+            <span class="nav-text">项目管理</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('project')" />
+              <ArrowRight v-else />
+            </el-icon>
+          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('project') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/project' }" @click.stop="navigateTo('/project')">
+                <span>项目列表</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/project/create' }" @click.stop="navigateTo('/project/create')">
+                <span>新建项目</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
-        <div class="nav-item" :class="{ active: activeMenu.startsWith('/cost') }" @click="navigateTo('/cost')">
-          <el-icon :size="18"><Money /></el-icon>
-          <span class="nav-text">成本管理</span>
-          <div class="nav-indicator" v-if="activeMenu.startsWith('/cost')" />
+        <!-- 成本管理 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('cost') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/cost') }" @click="toggleMenu('cost')">
+            <el-icon :size="18"><Money /></el-icon>
+            <span class="nav-text">成本管理</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('cost')" />
+              <ArrowRight v-else />
+            </el-icon>
+          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('cost') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/cost' }" @click.stop="navigateTo('/cost')">
+                <span>成本看板</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/cost/budget' }" @click.stop="navigateTo('/cost/budget')">
+                <span>预算管理</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
-        <div class="nav-item" :class="{ active: activeMenu.startsWith('/timesheet') }" @click="navigateTo('/timesheet')">
-          <el-icon :size="18"><Clock /></el-icon>
-          <span class="nav-text">工时管理</span>
-          <div class="nav-indicator" v-if="activeMenu.startsWith('/timesheet')" />
+        <!-- 工时管理 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('timesheet') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/timesheet') }" @click="toggleMenu('timesheet')">
+            <el-icon :size="18"><Clock /></el-icon>
+            <span class="nav-text">工时管理</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('timesheet')" />
+              <ArrowRight v-else />
+            </el-icon>
+          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('timesheet') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/timesheet' }" @click.stop="navigateTo('/timesheet')">
+                <span>工时填报</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu.startsWith('/timesheet/approval') }" @click.stop="navigateTo('/timesheet')">
+                <span>工时审批</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
-        <div class="nav-item" :class="{ active: activeMenu.startsWith('/resource') }" @click="navigateTo('/resource')">
-          <el-icon :size="18"><UserFilled /></el-icon>
-          <span class="nav-text">资源池</span>
-          <div class="nav-indicator" v-if="activeMenu.startsWith('/resource')" />
+        <!-- 资源池 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('resource') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/resource') }" @click="toggleMenu('resource')">
+            <el-icon :size="18"><UserFilled /></el-icon>
+            <span class="nav-text">资源池</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('resource')" />
+              <ArrowRight v-else />
+            </el-icon>
+          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('resource') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/resource' }" @click.stop="navigateTo('/resource')">
+                <span>人员列表</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/resource/performance' }" @click.stop="navigateTo('/resource/performance')">
+                <span>绩效评估</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
-        <!-- Groups -->
-        <div class="nav-group" v-show="!uiStore.sidebarCollapsed">
-          <div class="nav-group-title">
-            <el-icon :size="14"><Briefcase /></el-icon>
-            <span>商务管理</span>
+        <!-- 商务管理 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('business') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/business') }" @click="toggleMenu('business')">
+            <el-icon :size="18"><Briefcase /></el-icon>
+            <span class="nav-text">商务管理</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('business')" />
+              <ArrowRight v-else />
+            </el-icon>
           </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/business/contract' }" @click="navigateTo('/business/contract')">
-            <span>合同管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/business/payment' }" @click="navigateTo('/business/payment')">
-            <span>付款管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/business/supplier' }" @click="navigateTo('/business/supplier')">
-            <span>供应商管理</span>
-          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('business') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/business/contract' }" @click.stop="navigateTo('/business/contract')">
+                <span>合同管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/business/payment' }" @click.stop="navigateTo('/business/payment')">
+                <span>付款管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/business/supplier' }" @click.stop="navigateTo('/business/supplier')">
+                <span>供应商管理</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
-        <div class="nav-group" v-show="!uiStore.sidebarCollapsed">
-          <div class="nav-group-title">
-            <el-icon :size="14"><Document /></el-icon>
-            <span>流程审批</span>
+        <!-- 流程审批 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('workflow') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/workflow') }" @click="toggleMenu('workflow')">
+            <el-icon :size="18"><Document /></el-icon>
+            <span class="nav-text">流程审批</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('workflow')" />
+              <ArrowRight v-else />
+            </el-icon>
           </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/workflow/tasks' }" @click="navigateTo('/workflow/tasks')">
-            <span>我的待办</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/workflow/history' }" @click="navigateTo('/workflow/history')">
-            <span>流程历史</span>
-          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('workflow') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/workflow/tasks' }" @click.stop="navigateTo('/workflow/tasks')">
+                <span>我的待办</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/workflow/history' }" @click.stop="navigateTo('/workflow/history')">
+                <span>流程历史</span>
+              </div>
+            </div>
+          </Transition>
         </div>
 
+        <!-- 质量管理 - 无二级菜单 -->
         <div class="nav-item" :class="{ active: activeMenu === '/quality' }" @click="navigateTo('/quality')">
           <el-icon :size="18"><CircleCheck /></el-icon>
           <span class="nav-text">质量管理</span>
           <div class="nav-indicator" v-if="activeMenu === '/quality'" />
         </div>
 
+        <!-- 知识管理 - 无二级菜单 -->
         <div class="nav-item" :class="{ active: activeMenu === '/knowledge' }" @click="navigateTo('/knowledge')">
           <el-icon :size="18"><Reading /></el-icon>
           <span class="nav-text">知识管理</span>
           <div class="nav-indicator" v-if="activeMenu === '/knowledge'" />
         </div>
 
-        <div class="nav-group" v-show="!uiStore.sidebarCollapsed">
-          <div class="nav-group-title">
-            <el-icon :size="14"><Setting /></el-icon>
-            <span>系统管理</span>
+        <!-- 系统管理 - 可折叠 -->
+        <div class="nav-group-wrapper" :class="{ expanded: isMenuExpanded('system') }">
+          <div class="nav-item nav-parent" :class="{ active: activeMenu.startsWith('/system') }" @click="toggleMenu('system')">
+            <el-icon :size="18"><Setting /></el-icon>
+            <span class="nav-text">系统管理</span>
+            <el-icon :size="14" class="nav-expand-icon" v-show="!uiStore.sidebarCollapsed">
+              <ArrowDown v-if="isMenuExpanded('system')" />
+              <ArrowRight v-else />
+            </el-icon>
           </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu.startsWith('/system') && activeMenu !== '/system/announcements' }" @click="navigateTo('/system/users')">
-            <span>用户管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/system/roles' }" @click="navigateTo('/system/roles')">
-            <span>角色管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/system/departments' }" @click="navigateTo('/system/departments')">
-            <span>部门管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/system/announcements' }" @click="navigateTo('/system/announcements')">
-            <span>公告管理</span>
-          </div>
-          <div class="nav-sub-item" :class="{ active: activeMenu === '/system/permissions' }" @click="navigateTo('/system/permissions')">
-            <span>权限管理</span>
-          </div>
+          <Transition name="submenu">
+            <div class="nav-submenu" v-show="isMenuExpanded('system') && !uiStore.sidebarCollapsed">
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/system/users' }" @click.stop="navigateTo('/system/users')">
+                <span>用户管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/system/roles' }" @click.stop="navigateTo('/system/roles')">
+                <span>角色管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/system/departments' }" @click.stop="navigateTo('/system/departments')">
+                <span>部门管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/system/announcements' }" @click.stop="navigateTo('/system/announcements')">
+                <span>公告管理</span>
+              </div>
+              <div class="nav-sub-item" :class="{ active: activeMenu === '/system/permissions' }" @click.stop="navigateTo('/system/permissions')">
+                <span>权限管理</span>
+              </div>
+            </div>
+          </Transition>
         </div>
       </nav>
-
-      <!-- Collapse button -->
-      <button class="sidebar-collapse" @click="uiStore.toggleSidebar">
-        <el-icon><DArrowLeft v-if="!uiStore.sidebarCollapsed" /><DArrowRight v-else /></el-icon>
-      </button>
     </aside>
 
     <!-- Main Container -->
@@ -185,11 +280,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUIStore } from '@/stores/ui'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import {
+  Menu,
+  Odometer,
+  FolderOpened,
+  Money,
+  Clock,
+  UserFilled,
+  Briefcase,
+  Document,
+  CircleCheck,
+  Reading,
+  Setting,
+  DArrowLeft,
+  DArrowRight,
+  ArrowDown,
+  ArrowRight,
+  HomeFilled,
+  Search,
+  Bell,
+  SwitchButton,
+} from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -200,6 +316,55 @@ const activeMenu = computed(() => route.path as string)
 const currentTitle = computed(() => (route.meta.title as string) || '')
 const showUserMenu = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
+
+// 折叠状态管理
+const expandedMenus = ref<string[]>(['project', 'workflow', 'system']) // 默认展开的菜单
+
+function toggleMenu(menuId: string) {
+  if (uiStore.sidebarCollapsed) {
+    // 收起状态下直接导航到主页面
+    const defaultPaths: Record<string, string> = {
+      project: '/project',
+      cost: '/cost',
+      timesheet: '/timesheet',
+      resource: '/resource',
+      business: '/business/contract',
+      workflow: '/workflow/tasks',
+      system: '/system/users',
+    }
+    navigateTo(defaultPaths[menuId] || '/')
+    return
+  }
+  
+  if (expandedMenus.value.includes(menuId)) {
+    expandedMenus.value = expandedMenus.value.filter(id => id !== menuId)
+  } else {
+    expandedMenus.value.push(menuId)
+  }
+}
+
+function isMenuExpanded(menuId: string): boolean {
+  return expandedMenus.value.includes(menuId)
+}
+
+// 自动展开当前路由所在的菜单
+watch(activeMenu, (path) => {
+  const menuMap: Record<string, string[]> = {
+    project: ['/project', '/project/create'],
+    cost: ['/cost', '/cost/budget'],
+    timesheet: ['/timesheet'],
+    resource: ['/resource', '/resource/performance'],
+    business: ['/business/contract', '/business/payment', '/business/supplier'],
+    workflow: ['/workflow/tasks', '/workflow/history'],
+    system: ['/system/users', '/system/roles', '/system/departments', '/system/announcements', '/system/permissions'],
+  }
+  
+  for (const [menuId, paths] of Object.entries(menuMap)) {
+    if (paths.some(p => path.startsWith(p)) && !expandedMenus.value.includes(menuId)) {
+      expandedMenus.value.push(menuId)
+    }
+  }
+}, { immediate: true })
 
 function handleOutsideClick(e: MouseEvent) {
   if (userMenuRef.value && !userMenuRef.value.contains(e.target as Node)) {
@@ -239,8 +404,8 @@ async function handleLogout() {
 
 /* Sidebar */
 .sidebar {
-  width: $sidebar-width;
-  background: $bg-sidebar;
+  width: $nav-width-expanded;
+  background: $nav-bg; // 低饱和度深灰纯色
   display: flex;
   flex-direction: column;
   position: relative;
@@ -249,11 +414,18 @@ async function handleLogout() {
   z-index: 100;
 
   &.collapsed {
-    width: $sidebar-collapsed-width;
-    .logo-text, .nav-text, .nav-group { display: none; }
+    width: $nav-width-collapsed;
+    .logo-text, .nav-text, .nav-expand-icon, .nav-submenu, .nav-indicator { display: none; }
     .sidebar-nav { padding: 8px 0; }
-    .nav-item { justify-content: center; padding: 12px; margin: 4px 12px; }
-    .nav-item .nav-indicator { display: none; }
+    .nav-item { 
+      justify-content: center; 
+      padding: $nav-item-padding-y 12px; 
+      margin: 4px 12px; 
+    }
+    .sidebar-toggle {
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 }
 
@@ -262,7 +434,7 @@ async function handleLogout() {
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid $nav-divider-color;
 
   .logo-icon {
     width: 36px; height: 36px; flex-shrink: 0;
@@ -284,68 +456,164 @@ async function handleLogout() {
   }
 }
 
+// 收起/展开开关 (顶部位置)
+.sidebar-toggle {
+  position: absolute;
+  top: 72px;
+  left: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all $transition-normal;
+  z-index: 10;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.1);
+  }
+}
+
 .sidebar-nav {
   flex: 1;
-  padding: 12px 0;
+  padding: 16px 0; // 上下内边距16px
+  padding-top: 48px; // 为toggle按钮留空间
   overflow-y: auto;
   overflow-x: hidden;
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 }
 
+// 一级菜单项
 .nav-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 20px; margin: 3px 10px;
-  border-radius: $radius-md; cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: $nav-item-padding-y $nav-item-padding-x;
+  margin: 3px $nav-item-margin-x;
+  border-radius: $radius-md;
+  cursor: pointer;
   transition: all $transition-normal;
-  color: rgba(255, 255, 255, 0.7);
+  color: $nav-text-color;
   position: relative;
-  font-size: $font-size-md;
+  font-size: $nav-font-size-level1; // 14px
+  font-weight: $nav-font-weight-level1; // 500
 
-  &:hover { background: rgba(255, 255, 255, 0.08); color: white; }
-
-  &.active {
-    background: rgba(99, 102, 241, 0.2);
+  // hover动效
+  &:hover {
+    background: $nav-hover-bg;
     color: white;
+    transform: translateX(2px);
+  }
+
+  // 激活状态
+  &.active {
+    background: $nav-active-bg;
+    color: $nav-active-color;
+    
     .nav-indicator {
-      position: absolute; right: 12px; top: 50%;
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #818cf8; transform: translateY(-50%);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: $nav-indicator-color;
+      border-radius: 0 4px 4px 0;
     }
   }
 
   .nav-text {
     white-space: nowrap;
-    font-weight: $font-weight-medium;
+    flex: 1;
+  }
+  
+  // 展开/收起图标
+  .nav-expand-icon {
+    color: rgba(255, 255, 255, 0.5);
+    transition: transform $transition-normal;
   }
 }
 
-.nav-group {
-  margin: 6px 0;
-  .nav-group-title {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 24px; color: rgba(255, 255, 255, 0.35);
-    font-size: $font-size-xs; font-weight: $font-weight-semibold;
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .nav-sub-item {
-    padding: 9px 20px 9px 52px; margin: 2px 10px;
-    border-radius: $radius-sm; cursor: pointer;
-    color: rgba(255, 255, 255, 0.6); font-size: $font-size-sm;
-    transition: all $transition-normal;
-    &:hover { background: rgba(255,255,255,0.06); color: white; }
-    &.active { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
+// 有二级菜单的一级菜单项
+.nav-parent {
+  &:hover {
+    .nav-expand-icon {
+      color: white;
+    }
   }
 }
 
-.sidebar-collapse {
-  position: absolute; bottom: 16px; right: 12px;
-  width: 28px; height: 28px; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1); border: none;
-  cursor: pointer; display: flex; align-items: center;
-  justify-content: center; color: rgba(255, 255, 255, 0.6);
+// 菜单组容器
+.nav-group-wrapper {
+  &.expanded .nav-parent .nav-expand-icon {
+    transform: rotate(0deg); // 展开时图标向下
+  }
+  
+  &:not(.expanded) .nav-parent .nav-expand-icon {
+    transform: rotate(-90deg); // 收起时图标向右
+  }
+}
+
+// 二级菜单容器
+.nav-submenu {
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height $transition-slow ease-out, opacity $transition-normal;
+}
+
+// 二级菜单项
+.nav-sub-item {
+  padding: 12px $nav-item-padding-x 12px $nav-submenu-indent; // 左侧缩进52px
+  margin: 2px $nav-item-margin-x;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: $nav-sub-text-color;
+  font-size: $nav-font-size-level2; // 13px
+  font-weight: $nav-font-weight-level2; // 400
   transition: all $transition-normal;
-  &:hover { background: rgba(255,255,255,0.2); color: white; }
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+  }
+  
+  &.active {
+    background: rgba($accent-color, 0.15);
+    color: $nav-sub-text-color-active;
+    
+    // 激活指示器
+    &::before {
+      content: '';
+      position: absolute;
+      left: $nav-submenu-indent - 8px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: $nav-indicator-color;
+    }
+  }
+}
+
+// 子菜单展开/收起动画
+.submenu-enter-active {
+  transition: max-height $transition-slow ease-out, opacity $transition-normal;
+}
+.submenu-leave-active {
+  transition: max-height $transition-fast ease-in, opacity $transition-fast;
+}
+.submenu-enter-from,
+.submenu-leave-to {
+  max-height: 0;
+  opacity: 0;
 }
 
 /* Header */
@@ -353,7 +621,7 @@ async function handleLogout() {
   height: $header-height;
   background: $bg-primary;
   display: flex; align-items: center;
-  padding: 0 $spacing-xl;
+  padding: 0 $spacing-2xl; // 32px
   border-bottom: 1px solid $border-color;
   gap: $spacing-xl;
 }
@@ -460,17 +728,26 @@ async function handleLogout() {
 /* Main Content */
 .main-content {
   flex: 1;
-  padding: $content-padding;
+  padding: $spacing-2xl; // 32px 外边距
   overflow-y: auto;
   background: $bg-secondary;
+  max-width: 1440px;
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .sidebar { width: $sidebar-collapsed-width; .logo-text, .nav-text, .nav-group { display: none; } }
+  .sidebar { width: $nav-width-collapsed; 
+    .logo-text, .nav-text, .nav-expand-icon, .nav-submenu, .nav-indicator { display: none; } 
+  }
+  .sidebar-toggle {
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .header-center { display: none; }
+  .main-content { padding: $spacing-xl; } // 24px
 }
 @media (max-width: 768px) {
   .user-info { display: none; }
+  .main-content { padding: $spacing-lg; } // 16px
 }
 </style>

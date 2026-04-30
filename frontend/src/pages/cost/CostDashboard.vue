@@ -325,6 +325,8 @@ onMounted(loadData)
 
 .cost-dashboard {
   max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px; // 左右外边距 32px
 }
 
 /* 页面头部 */
@@ -383,9 +385,9 @@ onMounted(loadData)
 /* 统计卡片 */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
+  grid-template-columns: repeat(4, 1fr); // 4个核心指标横向等分
+  gap: 24px; // 8px栅格: 24px
+  margin-bottom: 24px;
 
   .stat-card {
     @include card-base;
@@ -537,8 +539,8 @@ onMounted(loadData)
 /* 内容网格 */
 .content-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: $spacing-lg;
+  grid-template-columns: 2fr 1fr 1fr; // 图表充分利用横向空间
+  gap: 24px; // 8px栅格: 24px
 }
 
 /* 面板 */

@@ -88,6 +88,8 @@ function onSaved() {
 
 .contract-page {
   max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px; // 左右外边距 32px
 }
 
 .create-btn {

@@ -79,26 +79,29 @@ function onAssignConfirmed() {
 
 .resource-pool-page {
   max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px; // 左右外边距 32px
 }
 
 .header-stats {
   display: flex;
-  gap: $spacing-md;
+  gap: 16px; // 8px栅格: 16px
 
   .stat-mini {
     @include card-base;
-    padding: $spacing-md $spacing-lg;
+    padding: 16px 24px; // 8px栅格: 16px, 24px
     text-align: center;
+    border-radius: 12px; // 统一圆角
 
     .stat-num {
-      font-size: $font-size-xl;
+      font-size: $font-size-xl; // 18px
       font-weight: $font-weight-bold;
       color: $text-primary;
       display: block;
     }
 
     .stat-label {
-      font-size: $font-size-sm;
+      font-size: $font-size-sm; // 13px
       color: $text-muted;
     }
 

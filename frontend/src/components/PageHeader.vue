@@ -24,27 +24,27 @@ defineProps<{
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: $spacing-xl;
-  gap: $spacing-lg;
+  margin-bottom: 24px; // 8px栅格: 24px
+  gap: 16px; // 8px栅格: 16px
 
   &-content { flex: 1; }
 
   .page-title {
-    font-size: $font-size-3xl;
+    font-size: $font-size-2xl; // 22px
     font-weight: $font-weight-bold;
     color: $text-primary;
     line-height: 1.25;
-    margin-bottom: 4px;
+    margin-bottom: 8px; // 8px栅格
   }
 
   .page-description {
-    font-size: $font-size-md;
+    font-size: $font-size-md; // 14px
     color: $text-muted;
   }
 
   &-actions {
     display: flex;
-    gap: $spacing-sm;
+    gap: 8px; // 8px栅格
     flex-shrink: 0;
   }
 }

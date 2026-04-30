@@ -68,17 +68,18 @@ const sparklinePoints = computed(() => {
   @include card-base;
   display: flex;
   align-items: flex-start;
-  gap: $spacing-lg;
-  padding: $spacing-xl;
+  gap: 24px; // 8px栅格: 24px
+  padding: 24px; // 8px栅格: 24px
+  border-radius: 12px; // 统一圆角 8-12px
 
   &.clickable { cursor: pointer; }
   &.elevated { box-shadow: $shadow-lg; }
 
   &-icon {
     @include icon-badge;
-    width: 44px;
-    height: 44px;
-    border-radius: $radius-lg;
+    width: 48px; // 8px栅格: 48px
+    height: 48px;
+    border-radius: 12px;
   }
 
   &-content {
@@ -88,7 +89,7 @@ const sparklinePoints = computed(() => {
   }
 
   &-value {
-    font-size: $font-size-3xl;
+    font-size: $font-size-2xl; // 22px
     font-weight: $font-weight-bold;
     color: $text-primary;
     font-variant-numeric: tabular-nums;
@@ -96,9 +97,9 @@ const sparklinePoints = computed(() => {
   }
 
   &-label {
-    font-size: $font-size-sm;
+    font-size: $font-size-sm; // 13px
     color: $text-muted;
-    margin-top: 4px;
+    margin-top: 8px; // 8px栅格
   }
 
   &-trend {
@@ -115,8 +116,8 @@ const sparklinePoints = computed(() => {
 
   &-sparkline {
     width: 100%;
-    height: 24px;
-    margin-top: $spacing-md;
+    height: 24px; // 8px栅格: 24px
+    margin-top: 16px; // 8px栅格
 
     svg { width: 100%; height: 100%; overflow: visible; }
     polyline { stroke-linejoin: round; stroke-linecap: round; }

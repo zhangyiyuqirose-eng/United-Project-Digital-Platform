@@ -1,4 +1,134 @@
 // Global reset and base styles
+
+// ── 12-Column Responsive Grid System ─────────────────────────────────────
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap, 24px);
+}
+
+.col-1  { grid-column: span 1; }
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-9  { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+// Responsive grid classes
+@media (max-width: 1024px) {
+  .grid-12 { gap: 16px; }
+}
+
+@media (max-width: 768px) {
+  .grid-12 { gap: 12px; }
+}
+
+// ── Content Container ────────────────────────────────────────────────────
+
+.content-container {
+  padding: 24px 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .content-container { padding: 24px; }
+}
+
+@media (max-width: 768px) {
+  .content-container { padding: 16px; }
+}
+
+// ── Card Container ───────────────────────────────────────────────────────
+
+.card-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.card-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+// ── Section Layout ───────────────────────────────────────────────────────
+
+.section-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .section-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .section-row { grid-template-columns: 1fr; }
+}
+
+.section-row-3-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+  .section-row-3-col { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .section-row-3-col { grid-template-columns: 1fr; }
+}
+
+// ── Navigation Animations ────────────────────────────────────────────────
+
+@keyframes menuExpand {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+@keyframes menuCollapse {
+  from {
+    max-height: 500px;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes navItemHover {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(2px);
+  }
+}
+
+// ── Base Reset ───────────────────────────────────────────────────────────
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -101,9 +231,9 @@ body {
   background: #0f172a;
 }
 
-// Dark theme sidebar
+// Dark theme sidebar - 使用低饱和度深灰纯色
 :root[data-theme="dark"] .sidebar {
-  background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%) !important;
+  background: #0f172a !important;
 }
 
 :root[data-theme="dark"] .sidebar-nav::-webkit-scrollbar-thumb {
@@ -197,4 +327,9 @@ body {
 
 :root[data-theme="dark"] .dropdown-item:hover {
   background: #334155;
+}
+
+:root[data-theme="dark"] .card-container {
+  background: #1e293b;
+  border-color: #334155;
 }

@@ -545,16 +545,18 @@ function navigateTo(path: string) {
 
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: $spacing-lg;
+  grid-template-columns: repeat(4, 1fr); // 4个核心数据卡片等宽等分
+  gap: 24px; // 8px栅格: 24px = 3 grid units
+  margin-bottom: 24px;
 }
 
 /* ── Bento Row (Projects + Tasks + Shortcuts) ───────── */
 
 .bento-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: $spacing-lg;
+  grid-template-columns: 2fr 1fr 1fr; // 下方模块3列布局
+  gap: 24px; // 8px栅格: 24px
+  margin-bottom: 24px;
 }
 
 /* ── Bento Card (shared panel style) ────────────────── */

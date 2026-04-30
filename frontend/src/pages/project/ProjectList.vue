@@ -79,6 +79,13 @@ async function confirmDelete(row: ProjectVO) {
 
 .project-list-page {
   max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px; // 左右外边距 32px
+
+  // 确保搜索区与表格区视觉分层
+  > * {
+    margin-bottom: 24px; // 8px栅格: 24px
+  }
 }
 
 .create-btn {

@@ -100,16 +100,27 @@ $shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
 
 // ── Border Radius ──────────────────────────────────────────────────
 
-$radius-sm: 6px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
-$radius-2xl: 20px;
-$radius-card: 16px;
-$radius-button: 10px;
+$radius-sm: 4px;   // 8px栅格: 4px
+$radius-md: 8px;   // 8px栅格: 8px
+$radius-lg: 12px;  // 8px栅格: 12px
+$radius-xl: 16px;  // 8px栅格: 16px
+$radius-2xl: 20px; // 8px栅格: 20px
+$radius-card: 12px; // 统一卡片圆角 8-12px
+$radius-button: 8px; // 按钮圆角 8px
 
-// ── Spacing Scale ──────────────────────────────────────────────────
+// ── 8px Grid System ───────────────────────────────────────────────────
 
+$grid-unit: 8px;
+$spacing-1x: 8px;   // 1 grid unit
+$spacing-2x: 16px;  // 2 grid units
+$spacing-3x: 24px;  // 3 grid units
+$spacing-4x: 32px;  // 4 grid units
+$spacing-5x: 40px;  // 5 grid units
+$spacing-6x: 48px;  // 6 grid units
+$spacing-7x: 56px;  // 7 grid units
+$spacing-8x: 64px;  // 8 grid units
+
+// Legacy spacing (kept for backwards compatibility)
 $spacing-xs: 4px;
 $spacing-sm: 8px;
 $spacing-md: 12px;
@@ -161,6 +172,38 @@ $sidebar-width: 260px;
 $sidebar-collapsed-width: 72px;
 $content-padding: 24px;
 $card-padding: 20px;
+
+// ── Navigation Design Variables ───────────────────────────────────────
+
+$nav-bg: $slate-800;              // 低饱和度深灰纯色 (#1E293B)
+$nav-bg-dark: $slate-900;         // 深色模式 (#0F172A)
+$nav-width-expanded: 260px;
+$nav-width-collapsed: 72px;
+$nav-item-padding-y: 16px;       // 菜单上下内边距16px
+$nav-item-padding-x: 20px;
+$nav-item-margin-x: 10px;
+$nav-font-size-level1: 14px;     // 一级菜单14px
+$nav-font-weight-level1: 500;    // 一级菜单500字重
+$nav-font-size-level2: 13px;     // 二级菜单13px
+$nav-font-weight-level2: 400;    // 二级菜单400字重
+$nav-submenu-indent: 52px;       // 二级菜单左侧缩进
+$nav-active-bg: rgba($accent-color, 0.2);
+$nav-active-color: #ffffff;
+$nav-hover-bg: rgba(255, 255, 255, 0.08);
+$nav-text-color: rgba(255, 255, 255, 0.7);
+$nav-text-color-active: #ffffff;
+$nav-sub-text-color: rgba(255, 255, 255, 0.6);
+$nav-sub-text-color-active: #a5b4fc;
+$nav-indicator-color: $accent-400;
+$nav-group-title-color: rgba(255, 255, 255, 0.35);
+$nav-divider-color: rgba(255, 255, 255, 0.08);
+
+// ── 12-Column Grid System ─────────────────────────────────────────────
+
+$grid-columns: 12;
+$grid-gap-sm: 16px;
+$grid-gap-md: 24px;
+$grid-gap-lg: 32px;
 
 // ── Responsive Breakpoints ─────────────────────────────────────────
 
